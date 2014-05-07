@@ -35,6 +35,14 @@ public class JAXRSConfiguration extends JAXConfiguration {
     enableHTTPExample = !Utils.hasOption(options, "-disablehttpexample");
     enableJavaScriptExample = !Utils.hasOption(options, "-disablejavascriptexample");
     enablePojoJsonDataObjects = Utils.hasOption(options, "-enablepojojson");
+    
+    if (Utils.hasOption(options, "-matchingresourcesonly"))
+    	onlyOutputResourcesMatching = Pattern.compile(Utils.getOption(options, "-matchingresourcesonly"));
+    
+    
+    if (Utils.hasOption(options, "-matchingpojonamesonly"))
+    	onlyOutputPojosMatching = Pattern.compile(Utils.getOption(options, "-matchingpojonamesonly"));
+    
     List<String> excludeFilters = Utils.getOptions(options, "-pathexcludefilter");
     for(String excludeFilter : excludeFilters){
       pathExcludeFilters.add(Pattern.compile(excludeFilter));
