@@ -20,28 +20,19 @@ package com.lunatech.doclets.jax.jaxrs.writers;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 
 import com.lunatech.doclets.jax.JAXConfiguration;
 import com.lunatech.doclets.jax.Utils;
-import com.lunatech.doclets.jax.jaxb.model.JAXBClass;
 import com.lunatech.doclets.jax.jaxrs.JAXRSDoclet;
 import com.lunatech.doclets.jax.jaxrs.model.JAXRSApplication;
 import com.lunatech.doclets.jax.jaxrs.model.PojoTypes;
-import com.lunatech.doclets.jax.jaxrs.model.Resource;
-import com.lunatech.doclets.jax.jaxrs.model.ResourceMethod;
 import com.sun.javadoc.ClassDoc;
-import com.sun.javadoc.Doc;
-import com.sun.javadoc.ProgramElementDoc;
 import com.sun.javadoc.Type;
-import com.sun.javadoc.TypeVariable;
 import com.sun.tools.doclets.formats.html.HtmlDocletWriter;
-import com.sun.tools.doclets.internal.toolkit.util.DirectoryManager;
 
 public class DataObjectIndexWriter extends DocletWriter {
 
@@ -64,7 +55,6 @@ public class DataObjectIndexWriter extends DocletWriter {
     printPrelude("Data object index", "Data objects");
 
     Comparator<Type> typeSimpleNameComparator = new Comparator<Type>() {
-      @Override
       public int compare(Type t0, Type t1) {
         return t0.simpleTypeName().compareTo(t1.simpleTypeName());
       }

@@ -30,42 +30,34 @@ public class ExcludeTaglet implements Taglet {
 
   public static final String NAME = "exclude";
 
-  @Override
   public String getName() {
     return NAME;
   }
 
-  @Override
   public boolean inField() {
     return true;
   }
 
-  @Override
   public boolean inConstructor() {
     return true;
   }
 
-  @Override
   public boolean inMethod() {
     return true;
   }
 
-  @Override
   public boolean inOverview() {
     return true;
   }
 
-  @Override
   public boolean inPackage() {
     return true;
   }
 
-  @Override
   public boolean inType() {
     return true;
   }
 
-  @Override
   public boolean isInlineTag() {
     return false;
   }
@@ -83,7 +75,6 @@ public class ExcludeTaglet implements Taglet {
   /**
    * Exclude tag does not support output.
    */
-  @Override
   public TagletOutput getTagletOutput(Tag tag, TagletWriter writer) throws IllegalArgumentException {
     throw new IllegalArgumentException();
   }
@@ -91,7 +82,6 @@ public class ExcludeTaglet implements Taglet {
   /**
    * Exclude tag does not support output.
    */
-  @Override
   public TagletOutput getTagletOutput(Doc doc, TagletWriter writer) throws IllegalArgumentException {
     throw new IllegalArgumentException();
   }

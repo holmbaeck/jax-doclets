@@ -9,6 +9,9 @@ import java.util.List;
  */
 public class PojoPizza {
 
+    /**
+     * The pizza style, choose with care.
+     */
     private PizzaStyle style;
 
     private Date expirationDate;
@@ -17,9 +20,6 @@ public class PojoPizza {
 
     private String name;
 
-    /**
-     * The pizza style, choose with care.
-     */
     public PizzaStyle getStyle() {
       return style;
     }

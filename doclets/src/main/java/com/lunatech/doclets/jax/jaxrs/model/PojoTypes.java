@@ -18,7 +18,6 @@ import com.sun.javadoc.FieldDoc;
 public class PojoTypes {
 
   public static Comparator<Type> TYPE_COMPARATOR = new Comparator<Type>() {
-		@Override
     public int compare(Type t0, Type t1) {
       if (t0 == t1) {
         return 0;

@@ -148,11 +148,11 @@ public class PojoClassWriter extends DocletWriter {
   private static PropertyDoc[] getProperties(ClassDoc classDoc) {
     final List<PropertyDoc> properties = new ArrayList<PropertyDoc>();
 
-    for (final MethodDoc method : classDoc.methods()) {
-      if (isDocumentableProperty(method)) {
+    for (final FieldDoc field : classDoc.fields(false)) {
+      if (isDocumentableProperty(field)) {
         // TODO: Look at the Jackson annotations governing property names
         // TODO: Handle read-only/write-only properties
-        PropertyDoc prop = new PropertyDoc(getPropertyName(method.name()), method.returnType(), method);
+        PropertyDoc prop = new PropertyDoc(getPropertyName(field), field.type(), field);
         properties.add(prop);
       }
     }
@@ -161,35 +161,21 @@ public class PojoClassWriter extends DocletWriter {
     return props;
   }
 
-  private static boolean isDocumentableProperty(final MethodDoc method) {
-    // Poor mans JavaBean property recognition
-    // TODO: This won't cope with any of the more esoteric Jackson strategies for mapping properties (including auto-detection strategies)
-    if (method.name().startsWith("get")
-        || (method.name().startsWith("is") && method.returnType().simpleTypeName().equalsIgnoreCase("boolean"))) {
-      // Jackson @JsonIgnore
-      final AnnotationDesc jsonIgnore = Utils.findAnnotation(method.annotations(),
-          "org.codehaus.jackson.annotate.JsonIgnore",
-          "com.fasterxml.jackson.annotation.JsonIgnore");
-      if (jsonIgnore == null || Boolean.FALSE.equals(Utils.getAnnotationValue(jsonIgnore))) {
-        return true;
-      } else {
-        System.err.println(method.qualifiedName() + " is @JsonIgnored");
+	private static boolean isDocumentableProperty(final FieldDoc method) {
+		final AnnotationDesc jsonIgnore = Utils.findAnnotation(method.annotations(), "org.codehaus.jackson.annotate.JsonIgnore", "com.fasterxml.jackson.annotation.JsonIgnore");
+		if (jsonIgnore == null || Boolean.FALSE.equals(Utils.getAnnotationValue(jsonIgnore))) {
+			return true;
+		}
+		return false;
+	}
+  
+  private static String getPropertyName(FieldDoc field) {
+      final AnnotationDesc serializedName = Utils.findAnnotation(field.annotations(), "com.google.gson.annotations.SerializedName");
+      if (serializedName != null && !Utils.isEmptyOrNull((String)Utils.getAnnotationValue(serializedName))) {
+    	  return (String)Utils.getAnnotationValue(serializedName);
       }
-    }
-    return false;
-  }
-
-  private static String getPropertyName(final String memberName) {
-    String basename = null;
-    if (memberName.startsWith("is")) {
-      basename = memberName.substring("is".length());
-    } else if (memberName.startsWith("get")) {
-      basename = memberName.substring("get".length());
-    }
-    if (basename != null) {
-      return Character.toLowerCase(basename.charAt(0)) + basename.substring(1);
-    }
-    return memberName;
+      
+      return field.name();
   }
 
   private void printEnumConstants() {
@@ -240,7 +226,7 @@ public class PojoClassWriter extends DocletWriter {
       printMemberType(member);
       close("td");
       open("td");
-      Doc javaDoc = member.getMemberDoc();
+      Doc javaDoc = member.getFieldDoc();
       if (!Utils.isEmptyOrNull(javaDoc.commentText())) {
         writer.printInlineComment(javaDoc);
       }
@@ -293,12 +279,12 @@ public class PojoClassWriter extends DocletWriter {
 
     private final String name;
     private final Type type;
-    private final MemberDoc memberDoc;
+    private final FieldDoc fieldDoc;
 
-    public PropertyDoc(String name, Type type, MemberDoc memberDoc) {
+    public PropertyDoc(String name, Type type, FieldDoc fieldDoc) {
       this.name = name;
       this.type = type;
-      this.memberDoc = memberDoc;
+      this.fieldDoc = fieldDoc;
     }
 
     public String getName() {
@@ -309,11 +295,10 @@ public class PojoClassWriter extends DocletWriter {
       return type;
     }
 
-    public MemberDoc getMemberDoc() {
-      return memberDoc;
+    public FieldDoc getFieldDoc() {
+      return fieldDoc;
     }
 
-    @Override
     public int compareTo(PropertyDoc o) {
       return name.compareTo(o.name);
     }
